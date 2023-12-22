@@ -1,7 +1,76 @@
-{
-	"folders": [
-		{
-			"path": ".."
-		}
-	]
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+    <title>Rotating Cube</title>
+</head>
+<body>
+    <canvas id="cubeCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('cubeCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas size
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const cube = {
+            size: 100,
+            rotationX: 0,
+            rotationY: 0,
+            rotationSpeed: 0.01,
+            colors: ['#FF5733', '#33FF57', '#5733FF', '#FFFF33', '#33FFFF', '#FF33FF'],
+            currentColorIndex: 0,
+            colorChangeInterval: 1000,
+        };
+
+        function drawCube() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const halfSize = cube.size / 2;
+            const x = canvas.width / 2;
+            const y = canvas.height / 2;
+
+            ctx.fillStyle = cube.colors[cube.currentColorIndex];
+            ctx.beginPath();
+            ctx.moveTo(x - halfSize, y - halfSize);
+            ctx.lineTo(x + halfSize, y - halfSize);
+            ctx.lineTo(x + halfSize, y + halfSize);
+            ctx.lineTo(x - halfSize, y + halfSize);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function update() {
+            cube.rotationX += cube.rotationSpeed;
+            cube.rotationY += cube.rotationSpeed;
+
+            if (Date.now() % cube.colorChangeInterval < 16) {
+                cube.currentColorIndex = (cube.currentColorIndex + 1) % cube.colors.length;
+            }
+
+            drawCube();
+            requestAnimationFrame(update);
+        }
+
+        update();
+
+        // Resize canvas when the window is resized
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
